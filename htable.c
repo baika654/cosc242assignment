@@ -4,7 +4,7 @@
 #include "mylib.h"
 #include <string.h>
 
-#define MAX 113
+#define MAX 10000000
 
 /*
   htable struct, contains variables for:
@@ -32,7 +32,7 @@ struct htablerec{
  */
 htable htable_new(hashing_t method){
     int i; 
-    htable result = emalloc(sizeof result);
+    htable result = emalloc(sizeof * result);
     result->numKeys = 0;
     result->capacity = MAX;
     result->method = method;
