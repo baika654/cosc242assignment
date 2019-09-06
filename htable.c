@@ -122,8 +122,11 @@ static void htableInsertAt(htable h, char *word, int key){
   stopping case, it returns -1 (insertion fail).
 */
 static int linearInsert(htable h, char *word){
+ 
     int collisions = 0;
     int key = wordToInt(word) % h->capacity;
+
+  
     if(h->items[key] == NULL){
         htableInsertAt(h, word, key);
         h->stats[h->numKeys++] = collisions;
@@ -134,7 +137,7 @@ static int linearInsert(htable h, char *word){
     }
     collisions = 1;
     while(collisions < h->capacity + 1){
-        key = (key + 1 % h->capacity);
+      key = ((key + 1) % h->capacity);
         if(h->items[key] == NULL){
             htableInsertAt(h, word, key);
             h->stats[h->numKeys++] = collisions;
@@ -247,14 +250,14 @@ static int doubleSearch(htable h, char *word){
 static int linearSearch(htable h, char *key){
     int collisions = 0;
     int pos = wordToInt(key) % h->capacity;
-    while(strcmp(key, h->items[pos]) != 0 && collisions <= h->capacity){
-        pos = (pos + 1 % h->capacity);
+
+    printf("Searching for  %s\n", key);
+    while(h->items[pos] != NULL && (strcmp(key, h->items[pos]) != 0) &&  pos < h->capacity){
+      pos = ((pos + 1) % h->capacity);
         collisions++;
-        if(h->items[pos] == NULL){
-            return 0;
-        }
+       
     }
-    if(collisions >= h->capacity){
+    if(collisions == h->capacity){
         return 0;
     }else{
         return h->frequencies[pos];
