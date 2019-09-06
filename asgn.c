@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <string.h>
 #include "htable.h"
 #include "mylib.h"
 
@@ -13,6 +14,8 @@ int main(int argc, char *argv[]) {
   char word[256];
   enum hashing_e hashtype;
   hashtype = LINEAR_P;
+  char text_filename[256];
+  FILE *file_pointer;
 
  
   /* Deal with all the flags that are added at the end of the app when
@@ -24,7 +27,11 @@ int main(int argc, char *argv[]) {
   while ((option = getopt(argc, argv, optstring)) != EOF) {
     switch (option) {
     case 'c':
-      /* do something */
+      if (optarg!=NULL) {
+	strcpy(text_filename, optarg);
+	printf("%s\n",text_filename);
+      }
+      break;
     case 'd':
       /* set to double hashing. Single hashing is the default.  */
       hashtype = DOUBLE_H;
@@ -55,6 +62,24 @@ int main(int argc, char *argv[]) {
     htable_insert(h, word);
   }
 
+  file_pointer = fopen(text_filename, "r");
+  if (file_pointer == NULL)
+    {
+       printf("Cannot open file.\n");
+       exit(EXIT_FAILURE);
+    }
+
+  
+  while (getword(word, sizeof word, file_pointer) != EOF)
+      {
+	if (htable_search(h,word)) {
+	  printf("The %s is in the dictionary\n", word);
+	} /* else {
+	  printf("%s\n", word);
+	  } */
+      }
+
+  fclose(file_pointer);
   
   return (EXIT_SUCCESS);
 }
