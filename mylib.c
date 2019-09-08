@@ -2,7 +2,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mylib.h"
+
+
 
 void *emalloc(size_t s){
     void *result = malloc(s);
@@ -48,3 +49,4 @@ int getword(char *s, int limit, FILE *stream) {
     *w = '\0';
     return w - s;
 }
+
