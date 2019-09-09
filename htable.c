@@ -104,16 +104,16 @@ void htable_print_stats(htable h, FILE *stream, int num_stats) {
   The hashing_t method paramater is to determine what hashing method to use
   for the new table.
  */
-htable htable_new(hashing_t method){
+htable htable_new(int size, hashing_t method){
     int i; 
-    htable result = emalloc(sizeof * result);
+    htable result = emalloc(sizeof result);
     result->numKeys = 0;
-    result->capacity = MAX;
+    result->capacity = size;
     result->method = method;
-    result->items = emalloc(MAX * sizeof result->items[0]);
-    result->frequencies = emalloc(MAX * sizeof result->frequencies[0]);
-    result->stats = emalloc(MAX * sizeof result->stats[0]);
-    for(i = 0; i < MAX; i++){
+    result->items = emalloc(size * (sizeof result->items[0]));
+    result->frequencies = emalloc(size * sizeof result->frequencies[0]);
+    result->stats = emalloc(size * sizeof result->stats[0]);
+    for(i = 0; i < size; i++){
         result->items[i] = NULL;
         result->frequencies[i] = 0;
         result->stats[i] = 0;
