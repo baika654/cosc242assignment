@@ -7,7 +7,7 @@ typedef struct htablerec *htable;
 
 typedef enum hashing_e { LINEAR_P, DOUBLE_H} hashing_t;
 
-extern htable htable_new(hashing_t method);
+extern htable htable_new(int tableSize, hashing_t method);
 extern int htable_insert(htable h, char *item);
 extern int htable_search(htable h, char *item);
 extern void htable_print(htable h, FILE *stream);
