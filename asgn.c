@@ -6,11 +6,23 @@
 #include "mylib.h"
 #include <time.h>
      
-   
+#define DEFAULT_TABLE_SIZE 113   
 
-
-  
-
+void static help() {
+  printf("Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
+Perform various operations using a hash table.  By default, words are\n\
+read from stdin and added to the hash table, before being printed out\n\
+alongside their frequencies to stdout.\n\n");
+  printf(" -c FILENAME  Check spelling of words in FILENAME using words\n\
+              from stdin as dictionary.  Print unknown words to\n\
+              stdout, timing info & count to stderr (ignore -p)\n\
+ -d           Use double hashing (linear probing is the default)\n\
+ -e           Display entire contents of hash table on stderr\n\
+ -p           Print stats info instead of frequencies & words\n\
+ -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
+ -t TABLESIZE Use the first prime >= TABLESIZE as htable size\n \n\
+ -h           Display this message\n \n");  
+}
 
 int is_prime (candidate) {
   int n;
@@ -31,6 +43,7 @@ return number;
 int main(int argc, char *argv[]) {
 
 
+  
   /* Setup variables and any defaults that are needed for this program */ 
   htable h;
   char word[256];
@@ -39,7 +52,6 @@ int main(int argc, char *argv[]) {
   char text_filename[256];
   FILE *file_pointer;
   int string_size_option;
-  int string_size_final = 200;
   int p_option = 0;
   int e_option = 0;
   int c_option = 0;
@@ -47,9 +59,12 @@ int main(int argc, char *argv[]) {
   double fill_time, search_time;
   int unknown_words=0;
   int snapshots = 10;
+  int tableSize = DEFAULT_TABLE_SIZE;
  
   /* Deal with all the flags that are added at the end of the app when
      started from the command line interface   */
+  
+
   
   
   const char *optstring = "c:deps:t:h";
@@ -93,15 +108,18 @@ int main(int argc, char *argv[]) {
       /* do something else */
       if (optarg!=NULL) {
 	string_size_option=atoi(optarg);
-	string_size_final=get_next_prime(string_size_option);
-	printf("%d\n",string_size_final);
+	tableSize=get_next_prime(string_size_option);
+	printf("%d\n",tableSize);
       }
       break;
     case 'h':
       /* call for help options */
-      printf("Help\n");
+      help();
+      return(EXIT_SUCCESS);
       break;
     default:
+      help();
+      return(EXIT_SUCCESS);
       break;
       /* if an unknown option is given */
     }
@@ -109,7 +127,7 @@ int main(int argc, char *argv[]) {
 
   /* Read in the dictionary that is piped to this program */
   start = clock();
-  h=htable_new(hashtype);
+  h=htable_new(tableSize, hashtype);
   while (getword(word, sizeof word, stdin) != EOF) {
     /*printf("%s\n",word);*/
     htable_insert(h, word);
@@ -151,7 +169,7 @@ int main(int argc, char *argv[]) {
     htable_print_stats(h, stdout , snapshots);
   }
 
-  printf("C-option is %d and P-option is %d\n",c_option, p_option);
+  /*printf("C-option is %d and P-option is %d\n",c_option, p_option);*/
   if ((c_option==0) && (p_option==0)) {
     htable_print(h,stdout);
   }
