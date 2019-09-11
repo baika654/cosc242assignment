@@ -1,4 +1,4 @@
-#include <stdio.h>
+include <stdio.h>
 #include <stdlib.h>
 #include "htable.h"
 #include "mylib.h"
@@ -238,28 +238,31 @@ static int linearInsert(htable h, char *word){
 /**
  * This method calculates the next step for double hashing.
  *
- * @param h the htable 
+ * @param h the htable we are working with.
+ * @param i_key the unsigned integer key used to calculate the next step.
+ *
+ * @return an unsigned integer representing the next step.
  */
 static unsigned int htable_step(htable h, unsigned int i_key){
     return 1 + (i_key % (h->capacity - 1));
 }
 
 /**
-  This method uses double hashing to insert a key into a hash table.
-  It iterates based on the double hashing algorithm until it finds either
-  a free cell, a matching string, or has iterated through the entire table.
-  If it finds a free cell, it inserts the given string, increases the numKeys
-  variable of the htable, and sets the stats[numKeys] to the number of
-  collisions that occured during insertion.
-  If it finds a matching string, it increases the key's matching frequency.
-  If it iterates through through the whole table and doesn't find either
-  stopping case, it returns -1 (insertion fail).
-
-  @param h the hash table to insert into.
-  @param word the word to insert into the hash table.
-
-  @return returns the key if it successfully inserted,
-  returns -1 if it failed.
+ * This method uses double hashing to insert a key into a hash table.
+ * It iterates based on the double hashing algorithm until it finds either
+ * a free cell, a matching string, or has iterated through the entire table.
+ * If it finds a free cell, it inserts the given string, increases the numKeys
+ * variable of the htable, and sets the stats[numKeys] to the number of
+ * collisions that occured during insertion.
+ * If it finds a matching string, it increases the key's matching frequency.
+ * If it iterates through through the whole table and doesn't find either
+ * stopping case, it returns -1 (insertion fail).
+ *
+ * @param h the hash table to insert into.
+ * @param word the word to insert into the hash table.
+ *
+ * @return returns the key if it successfully inserted,
+ * returns -1 if it failed.
 */
 static int doubleInsert(htable h, char *word){
     int collisions = 0;
@@ -292,17 +295,20 @@ static int doubleInsert(htable h, char *word){
 
 
 /**
-  This method uses double hashing to search for a key into a hash table.
-  It iterates based on the double hashing algorithm until it finds either
-  a free cell, a matching string, or has iterated through the entire table.
-  If it finds a free cell, it returns a 0, indicating that the
-  word is not in the table.
-  If it finds a matching string, it increases the key's matching frequency.
-  If it iterates through through the whole table and doesn't find either
-  stopping case, it returns 0 (word is not in the table).
-
-  @param h the hash table to search.
-  @param word the word to insert into 
+ * This method uses double hashing to search for a key into a hash table.
+ * It iterates based on the double hashing algorithm until it finds either
+ * a free cell, a matching string, or has iterated through the entire table.
+ * If it finds a free cell, it returns a 0, indicating that the
+ * word is not in the table.
+ * If it finds a matching string, it increases the key's matching frequency.
+ * If it iterates through through the whole table and doesn't find either
+ * stopping case, it returns 0 (word is not in the table).
+ *
+ * @param h the hash table to search.
+ * @param word the word to insert into.
+ *
+ * @return returns the frequencies of the key if it is found, returns 0
+ * if the key is not found.
 */
 static int doubleSearch(htable h, char *word){
     int key = wordToInt(word) % h->capacity;
@@ -322,20 +328,20 @@ static int doubleSearch(htable h, char *word){
 }
 
 /**
-  This method uses double hashing to search for a key into a hash table.
-  It iterates based on the linear probing algorithm until it finds either
-  a free cell, a matching string, or has iterated through the entire table.
-  If it finds a free cell, it returns a 0, indicating that the
-  word is not in the table.
-  If it finds a matching string, it increases the key's matching frequency.
-  If it iterates through through the whole table and doesn't find either
-  stopping case, it returns 0 (word is not in the table).
-
-  @param h the hash table to search for the given key.
-  @param key the key to search for.
-
-  @return returns the frequencies of the key if it is found, returns 0
-  if the key is not found.
+ * This method uses double hashing to search for a key into a hash table.
+ * It iterates based on the linear probing algorithm until it finds either
+ * a free cell, a matching string, or has iterated through the entire table.
+ * If it finds a free cell, it returns a 0, indicating that the
+ * word is not in the table.
+ * If it finds a matching string, it increases the key's matching frequency.
+ * If it iterates through through the whole table and doesn't find either
+ * stopping case, it returns 0 (word is not in the table).
+ 
+ * @param h the hash table to search for the given key.
+ * @param key the key to search for.
+ 
+ * @return returns the frequencies of the key if it is found, returns 0
+ * if the key is not found.
 */
 static int linearSearch(htable h, char *key){
     int collisions = 0;
@@ -358,12 +364,12 @@ static int linearSearch(htable h, char *key){
 
 
 /**
-  This method uses either the linearInsert method or the doubleInsert method
-  to insert a word into a given hash table h, based on that hash table's
-  method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
-
-  @param h the hash table to insert into.
-  @param word the word to insert into the hash table.
+ * This method uses either the linearInsert method or the doubleInsert method
+ * to insert a word into a given hash table h, based on that hash table's
+ * method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
+ *
+ * @param h the hash table to insert into.
+ * @param word the word to insert into the hash table.
 */
 int htable_insert(htable h, char *word){
     if(h->method == LINEAR_P){
@@ -374,12 +380,11 @@ int htable_insert(htable h, char *word){
 }
 
 /**
-  This method uses either the linearInsert method or the doubleInsert method
-  to search for a word into a given hash table h, based on that hash table's
-  method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
-
-  @param h the hash table to search for the given key.
-  @param key the key to search for.
+ * This method uses either the linearInsert method or the doubleInsert method
+ * to search for a word into a given hash table h, based on that hash table's
+ * method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
+ * @param h the hash table to search for the given key.
+ * @param key the key to search for.
 */
 int htable_search(htable h, char *word){
     if(h->method == LINEAR_P){
@@ -390,8 +395,8 @@ int htable_search(htable h, char *word){
 }
 
 /**
- *This function prints the entire contents of the hash table. Each element of 
- *the has table is printed one line at a time. 
+ * This function prints the entire contents of the hash table. Each element of 
+ * the has table is printed one line at a time. 
  *
  * @param h the hashtable to print entire contents from.
  * 
