@@ -151,7 +151,7 @@ void htable_print(htable h, FILE *stream){
     int i;
     for(i = 0; i < h->capacity; i++){
         if(h->items[i] != NULL){
-            fprintf(stream, "%d    %s\n", h->frequencies[i], h->items[i]);
+            fprintf(stream, "%-3d  %s\n", h->frequencies[i], h->items[i]);
         }
     }
 }
