@@ -34,7 +34,7 @@ int is_prime (int candidate) {
 }
 
 int get_next_prime(int number) {
-    if (number == 1){
+    if (number == 1 || number == 0){
         return 2;
     }
     while (!is_prime(number)) {
