@@ -8,24 +8,24 @@
      
 #define DEFAULT_TABLE_SIZE 113   
 
-static void help() {
-    printf("Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
+static void help(FILE *stream) {
+  fprintf(stream,"Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
 Perform various operations using a hash table.  By default, words are\n\
 read from stdin and added to the hash table, before being printed out\n\
 alongside their frequencies to stdout.\n\n");
-    printf(" -c FILENAME  Check spelling of words in FILENAME using words\n\
-              from stdin as dictionary.  Print unknown words to\n\
+  fprintf(stream," -c FILENAME  Check spelling of words in FILENAME using \
+words\n              from stdin as dictionary.  Print unknown words to\n\
               stdout, timing info & count to stderr (ignore -p)\n\
  -d           Use double hashing (linear probing is the default)\n"
            );
-    printf("-e           Display entire contents of hash table on stderr\n\
- -p           Print stats info instead of frequencies & words\n\
+  fprintf(stream," -e           Display entire contents of hash table on \
+stderr\n -p           Print stats info instead of frequencies & words\n\
  -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
- -t TABLESIZE Use the first prime >= TABLESIZE as htable size\n \n\
- -h           Display this message\n \n");  
+ -t TABLESIZE Use the first prime >= TABLESIZE as htable size\n\n\
+ -h           Display this message\n\n");  
 }
 
-int is_prime (int candidate) {
+int is_prime(int candidate) {
     int n;
     for (n=2; n < candidate;n++) {
         if ((candidate %  n)==0) return 0;
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     /* Setup variables and any defaults that are needed for this program */ 
     htable h;
     char word[256];
-    enum hashing_e hashtype = LINEAR_P;    
+    hashing_t hashtype = LINEAR_P;    
     char text_filename[256];
     FILE *file_pointer;
     int string_size_option;
@@ -117,11 +117,11 @@ int main(int argc, char *argv[]) {
                 break;
             case 'h':
                 /* call for help options */
-                help();
+                help(stderr);
                 return(EXIT_SUCCESS);
                 break;
             default:
-                help();
+                help(stderr);
                 return(EXIT_SUCCESS);
                 break;
                 /* if an unknown option is given */
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
     fill_time = ((double) (end - start))/CLOCKS_PER_SEC;
 
     if (e_option) {
-        htable_print_entire_table(h);
+      htable_print_entire_table(h, stderr);
     }
   
     if (c_option==1) {

@@ -402,18 +402,16 @@ int htable_search(htable h, char *word){
  * 
  */
 
-void htable_print_entire_table(htable h) {
+void htable_print_entire_table(htable h, FILE *stream) {
     int i;
-    printf("  Pos  Freq  Stats  Word\n");
-    printf("----------------------------------------\n");
+    fprintf(stream, "  Pos  Freq  Stats  Word\n");
+    fprintf(stream, "----------------------------------------\n");
     for (i=0; i<h->capacity; i++) {
-    
-        printf("%5d %5d %5d", i, h->frequencies[i], h->stats[i]);
-        if (h->items[i]==NULL) {
-            printf("\n"); 
-        } else {
-            printf("   %s\n",h->items[i]);
-        }  
+      if (h->items[i]==NULL) {
+        fprintf(stream, "%5d %5d %5d\n", i, h->frequencies[i], h->stats[i]);
+      } else {
+        fprintf(stream, "%5d %5d %5d   %s\n",i, h->frequencies[i], h->stats[i], h->items[i]);
+      }  
     }
 
 }
