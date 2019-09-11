@@ -16,8 +16,9 @@ alongside their frequencies to stdout.\n\n");
     printf(" -c FILENAME  Check spelling of words in FILENAME using words\n\
               from stdin as dictionary.  Print unknown words to\n\
               stdout, timing info & count to stderr (ignore -p)\n\
- -d           Use double hashing (linear probing is the default)\n");
-    printf(" -e           Display entire contents of hash table on stderr\n \
+ -d           Use double hashing (linear probing is the default)\n"
+           );
+    printf("-e           Display entire contents of hash table on stderr\n\
  -p           Print stats info instead of frequencies & words\n\
  -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
  -t TABLESIZE Use the first prime >= TABLESIZE as htable size\n \n\
@@ -33,6 +34,9 @@ int is_prime (int candidate) {
 }
 
 int get_next_prime(int number) {
+    if (number == 1){
+        return 2;
+    }
     while (!is_prime(number)) {
         number++;
     }
@@ -47,7 +51,7 @@ int main(int argc, char *argv[]) {
     /* Setup variables and any defaults that are needed for this program */ 
     htable h;
     char word[256];
-    enum hashing_e hashtype = LINEAR_P;
+    enum hashing_e hashtype = LINEAR_P;    
     char text_filename[256];
     FILE *file_pointer;
     int string_size_option;
