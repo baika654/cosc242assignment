@@ -10,8 +10,8 @@
 /**
  * htable struct, contains variables for:
  * The number of keys currently in the table, the capcity of the table,
- * the contents of the table (an array of strings), the frequencies of each key,
- * a record of how many collisions occur per insertion, and an enum
+ * the contents of the table (an array of strings), the frequencies of
+ * each key, a record of how many collisions occur per insertion, and an enum
  * type which dictates the type of hashing method.
  */
 struct htablerec{
@@ -86,7 +86,8 @@ void htable_print_stats(htable h, FILE *stream, int num_stats) {
     for (i = 1; i <= num_stats; i++) {
         print_stats_line(h, stream, 100 * i / num_stats);
     }
-    fprintf(stream, "------------------------------------------------------\n\n");
+    fprintf(stream, "-------------------------------\
+-----------------------\n\n");
 }
 
 
@@ -341,7 +342,8 @@ static int linearSearch(htable h, char *key){
     int pos = wordToInt(key) % h->capacity;
 
     /* printf("Searching for  %s\n", key); */
-    while(h->items[pos] != NULL && (strcmp(key, h->items[pos]) != 0) &&  pos < h->capacity){
+    while(h->items[pos] != NULL &&
+          (strcmp(key, h->items[pos]) != 0) &&  pos < h->capacity){
         pos = ((pos + 1) % h->capacity);
         collisions++;
        
