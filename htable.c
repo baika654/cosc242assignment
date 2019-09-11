@@ -7,16 +7,13 @@
 #define MAX 113
 
 
-
-
-
 /**
  * htable struct, contains variables for:
  * The number of keys currently in the table, the capcity of the table,
  * the contents of the table (an array of strings), the frequencies of each key,
  * a record of how many collisions occur per insertion, and an enum
  * type which dictates the type of hashing method.
-*/
+ */
 struct htablerec{
     int numKeys;
     int capacity;
@@ -106,7 +103,7 @@ void htable_print_stats(htable h, FILE *stream, int num_stats) {
  * double.
  *
  * @return result the resulting htable that has been created.
-*/
+ */
 htable htable_new(int size, hashing_t method){
     int i; 
     htable result = emalloc(sizeof result);
@@ -131,7 +128,7 @@ htable htable_new(int size, hashing_t method){
  * itself.
  *
  * @param h the hash table to be freed.
-*/
+ */
 void htable_free(htable h){
     int i;
     for(i = 0; i < h->capacity; i++){
@@ -148,7 +145,7 @@ void htable_free(htable h){
  *
  * @param h the htable that we want to print the keys from.
  * @param stream the output stream that we want to print to.
-*/
+ */
 void htable_print(htable h, FILE *stream){
     int i;
     for(i = 0; i < h->capacity; i++){
@@ -166,7 +163,7 @@ void htable_print(htable h, FILE *stream){
  *
  * @return result the resulting unsigned int after the string
  * has been converted.
-*/
+ */
 static unsigned int wordToInt(char *word){
     unsigned int result = 0;
     while(*word != '\0'){
@@ -183,7 +180,7 @@ static unsigned int wordToInt(char *word){
  * @param h the htable that the string is inserted at.
  * @param word the string to be inserted.
  * @param key the index to insert the string at.
-*/
+ */
 static void htableInsertAt(htable h, char *word, int key){
     h->items[key] = emalloc(sizeof h->items[key][0] * strlen(word)+1);
     strcpy(h->items[key], word);
@@ -204,7 +201,7 @@ static void htableInsertAt(htable h, char *word, int key){
  *
  * @param h the htable that the key is to be inserted into.
  * @param word the string to be inserted into the htable.
-*/
+ */
 static int linearInsert(htable h, char *word){
  
     int collisions = 0;
@@ -241,12 +238,12 @@ static int linearInsert(htable h, char *word){
  * This method calculates the next step for double hashing.
  *
  * @param h the htable 
-*/
+ */
 static unsigned int htable_step(htable h, unsigned int i_key){
     return 1 + (i_key % (h->capacity - 1));
 }
 
-/*
+/**
   This method uses double hashing to insert a key into a hash table.
   It iterates based on the double hashing algorithm until it finds either
   a free cell, a matching string, or has iterated through the entire table.
@@ -256,6 +253,12 @@ static unsigned int htable_step(htable h, unsigned int i_key){
   If it finds a matching string, it increases the key's matching frequency.
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns -1 (insertion fail).
+
+  @param h the hash table to insert into.
+  @param word the word to insert into the hash table.
+
+  @return returns the key if it successfully inserted,
+  returns -1 if it failed.
 */
 static int doubleInsert(htable h, char *word){
     int collisions = 0;
@@ -287,7 +290,7 @@ static int doubleInsert(htable h, char *word){
 }
 
 
-/*
+/**
   This method uses double hashing to search for a key into a hash table.
   It iterates based on the double hashing algorithm until it finds either
   a free cell, a matching string, or has iterated through the entire table.
@@ -296,6 +299,9 @@ static int doubleInsert(htable h, char *word){
   If it finds a matching string, it increases the key's matching frequency.
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns 0 (word is not in the table).
+
+  @param h the hash table to search.
+  @param word the word to insert into 
 */
 static int doubleSearch(htable h, char *word){
     int key = wordToInt(word) % h->capacity;
@@ -314,7 +320,7 @@ static int doubleSearch(htable h, char *word){
     }
 }
 
-/*
+/**
   This method uses double hashing to search for a key into a hash table.
   It iterates based on the linear probing algorithm until it finds either
   a free cell, a matching string, or has iterated through the entire table.
@@ -323,6 +329,12 @@ static int doubleSearch(htable h, char *word){
   If it finds a matching string, it increases the key's matching frequency.
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns 0 (word is not in the table).
+
+  @param h the hash table to search for the given key.
+  @param key the key to search for.
+
+  @return returns the frequencies of the key if it is found, returns 0
+  if the key is not found.
 */
 static int linearSearch(htable h, char *key){
     int collisions = 0;
@@ -343,10 +355,13 @@ static int linearSearch(htable h, char *key){
 }
 
 
-/*
+/**
   This method uses either the linearInsert method or the doubleInsert method
   to insert a word into a given hash table h, based on that hash table's
   method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
+
+  @param h the hash table to insert into.
+  @param word the word to insert into the hash table.
 */
 int htable_insert(htable h, char *word){
     if(h->method == LINEAR_P){
@@ -356,10 +371,13 @@ int htable_insert(htable h, char *word){
     }
 }
 
-/*
+/**
   This method uses either the linearInsert method or the doubleInsert method
   to search for a word into a given hash table h, based on that hash table's
   method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
+
+  @param h the hash table to search for the given key.
+  @param key the key to search for.
 */
 int htable_search(htable h, char *word){
     if(h->method == LINEAR_P){
@@ -369,12 +387,12 @@ int htable_search(htable h, char *word){
     }
 }
 
-/*
+/**
  *This function prints the entire contents of the hash table. Each element of 
  *the has table is printed one line at a time. 
  *
  * @param h the hashtable to print entire contents from.
- *
+ * 
  */
 
 void htable_print_entire_table(htable h) {
