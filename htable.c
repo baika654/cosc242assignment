@@ -277,7 +277,7 @@ static int doubleInsert(htable h, char *word){
     }
     collisions = 1;
     while(collisions < h->capacity + 1){
-        key = htable_step(h, key);
+      key = (key + htable_step(h, wordToInt(word))) % h->capacity;
         if(h->items[key] == NULL){
             htableInsertAt(h, word, key);
             h->stats[h->numKeys++] = collisions;
