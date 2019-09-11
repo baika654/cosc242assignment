@@ -29,8 +29,6 @@ struct htablerec{
   The hashing_t method paramater is to determine what hashing method to use
   for the new table.
 
-  @param size the capacity of the hash table.
-  @param method the method for hashing to be used by the hash table.
  */
 htable htable_new(int size, hashing_t method){
     int i; 
@@ -66,7 +64,7 @@ static void print_stats_line(htable h, FILE *stream, int percent_full) {
     int at_home = 0;
     int max_collisions = 0;
     int i = 0;
-
+    
     if (current_entries > 0 && current_entries <= h->numKeys) {
         for (i = 0; i < current_entries; i++) {
             if (h->stats[i] == 0) {
@@ -127,7 +125,6 @@ void htable_print_stats(htable h, FILE *stream, int num_stats) {
   
   Currently the free call on h->items is commented out.
 
-  @param h the hash table to be freed.
  */
 void htable_free(htable h){
     int i;
@@ -136,15 +133,13 @@ void htable_free(htable h){
     }
     free(h->frequencies);
     free(h->stats);
-    /*free(h->items);*/
+    free(h->items);
     free(h);
 }
 
 /**
   This method prints all the keys of the htable to a given output stream.
 
-  @param h the hash table to print out.
-  @param stream the stream to print to
  */
 void htable_print(htable h, FILE *stream){
     int i;
@@ -159,7 +154,6 @@ void htable_print(htable h, FILE *stream){
   This static method converts a string to an unsigned int.
   This is used for inserting and searching indeces in the htable.
 
-  @word the word to be converted to an unsigned int.
  */
 static unsigned int wordToInt(char *word){
     unsigned int result = 0;
@@ -173,11 +167,7 @@ static unsigned int wordToInt(char *word){
   This static method allocates memory for a string and inserts it
   at a given index in an htable.
   This method makes the insertion code A LOT cleaner.
-
-  @param h the table to insert into.
-  @param word the word to insert into the hash table.
-  @param key the index to insert into the hash table.
- */
+*/
 static void htableInsertAt(htable h, char *word, int key){
     h->items[key] = emalloc(sizeof h->items[key][0] * strlen(word) + 1);
     strcpy(h->items[key], word);
@@ -199,8 +189,6 @@ static void htableInsertAt(htable h, char *word, int key){
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns -1 (insertion fail).
 
-  @param h the hash table to insert into.
-  @param word the word to insert.
 */
 static int linearInsert(htable h, char *word){
     int collisions = 0;
@@ -257,8 +245,6 @@ static unsigned int htable_step(htable h, unsigned int i_key){
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns -1 (insertion fail).
 
-  @param h the hash table to insert into.
-  @param word the word to insert into the hash table.
  */
 static int doubleInsert(htable h, char *word){
     int collisions = 0;
@@ -302,9 +288,6 @@ static int doubleInsert(htable h, char *word){
 
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns 0 (word is not in the table).
-
-  @param h the hash table to search through.
-  @param word the word to search for.
 */
 static int doubleSearch(htable h, char *word){
     int key = wordToInt(word) % h->capacity;
@@ -335,9 +318,6 @@ static int doubleSearch(htable h, char *word){
 
   If it iterates through through the whole table and doesn't find either
   stopping case, it returns 0 (word is not in the table).
-
-  @param h the hash table to search through.
-  @param word the word to search for.
 */
 static int linearSearch(htable h, char *key){
     int collisions = 0;
@@ -363,8 +343,6 @@ static int linearSearch(htable h, char *key){
   to insert a word into a given hash table h, based on that hash table's
   method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
 
-  @param h the hash table to search in.
-  @param word the word to search for.
  */
 int htable_insert(htable h, char *word){
     /*This block checks if the table being inserted into is full.
@@ -386,8 +364,6 @@ int htable_insert(htable h, char *word){
   to search for a word into a given hash table h, based on that hash table's
   method variable (LINEAR_P for linear probing, DOUBLE_H for double hashing).
 
-  @param h the hash table to search in.
-  @param word the word to search for.
 */
 int htable_search(htable h, char *word){
     if(h->method == LINEAR_P){
