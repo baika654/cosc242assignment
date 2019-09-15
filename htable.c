@@ -4,7 +4,6 @@
 #include "mylib.h"
 #include <string.h>
 
-#define MAX 113
 
 
 /**
@@ -145,13 +144,14 @@ void htable_free(htable h){
  * This method prints all the keys of the htable to a given output stream.
  *
  * @param h the htable that we want to print the keys from.
- * @param stream the output stream that we want to print to.
+ * @param f() the function that actually prints values from htable h
+ *            to stdout.
  */
-void htable_print(htable h, FILE *stream){
+void htable_print(htable h, void f(int freq, char* word)){
     int i;
     for(i = 0; i < h->capacity; i++){
-        if(h->items[i] != NULL){
-            fprintf(stream, "%-3d  %s\n", h->frequencies[i], h->items[i]);
+        if(h->items[i] != NULL) {
+	  f(h->frequencies[i], h->items[i]);
         }
     }
 }
@@ -204,7 +204,7 @@ static void htableInsertAt(htable h, char *word, int key){
  * @param word the string to be inserted into the htable.
  */
 static int linearInsert(htable h, char *word){
- 
+
     int collisions = 0;
     int key = wordToInt(word) % h->capacity;
 
@@ -313,18 +313,18 @@ static int doubleInsert(htable h, char *word){
 static int doubleSearch(htable h, char *word){
     int key = wordToInt(word) % h->capacity;
     int collisions = 0;
-    while(strcmp(h->items[key], word) != 0 && collisions <= h->capacity){
+    while((h->items[key] != NULL) && strcmp(h->items[key], word) != 0
+	  && collisions < h->capacity){
         collisions++;
-        key = htable_step(h, key) % h->capacity;
-        if(h->items[key] == NULL){
-            return 0;
-        }
+        key = (key + htable_step(h, wordToInt(word))) % h->capacity;
+	
     }
     if(collisions >= h->capacity){
         return 0;
     }else{
         return h->frequencies[key];
     }
+    return 0;
 }
 
 /**
@@ -347,12 +347,10 @@ static int linearSearch(htable h, char *key){
     int collisions = 0;
     int pos = wordToInt(key) % h->capacity;
 
-    /* printf("Searching for  %s\n", key); */
     while(h->items[pos] != NULL &&
-          (strcmp(key, h->items[pos]) != 0) &&  pos < h->capacity){
+          (strcmp(key, h->items[pos]) != 0) &&  collisions < h->capacity) {
         pos = ((pos + 1) % h->capacity);
         collisions++;
-       
     }
     if(collisions == h->capacity){
         return 0;
