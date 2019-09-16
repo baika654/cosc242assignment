@@ -4,6 +4,11 @@
 #include <stdlib.h>
 
 
+/** 
+ * This function allocates memory on the heap.
+ * @param s - the amount of memory in bytes needed.
+ * @return - a pointer to a chunk of memory.
+ */
 
 void *emalloc(size_t s){
     void *result = malloc(s);
@@ -14,6 +19,13 @@ void *emalloc(size_t s){
     return result;
 }
 
+/** 
+ * This function resizes a chunk of memory pointed by a variable.
+ * @param obj - a pointer to an allocated chunk of memory.
+ * @param s - the new amount of memory requested in bytes.
+ * @return - a new chunk of memory with data from pointer obj copied in.
+ */
+
 void *erealloc(void *obj, size_t s){
     void *result = realloc(obj, s);
     if(result == NULL){
@@ -22,6 +34,14 @@ void *erealloc(void *obj, size_t s){
     }
     return result;
 }
+
+/** This function extracts a word from a stdin filestream.
+ * @param s - a pointer to a character string. The word is copied into this
+ *           string.
+ * @param limit - the size of the character string.
+ * @param stream - a pointer to the filestream that provides the the words.
+ * @return - the word size in bytes or EOF.
+ */
 
 
 int getword(char *s, int limit, FILE *stream) {
